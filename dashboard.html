@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h2>Dashboard</h2>
+
+<input id="projectName" placeholder="Project name">
+<button onclick="createProject()">Create Project</button>
+
+<br><br>
+
+<input id="taskTitle" placeholder="Task title">
+<button onclick="createTask()">Create Task</button>
+
+<ul id="taskList"></ul>
+
+<script>
+const token = localStorage.getItem("token");
+
+function createProject() {
+    fetch("/projects", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            name: projectName.value
+        })
+    }).then(() => alert("Project Created"));
+}
+
+function createTask() {
+    fetch("/tasks", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            title: taskTitle.value,
+            user_id: 1,
+            project_id: 1
+        })
+    }).then(loadTasks);
+}
+
+function loadTasks() {
+    fetch("/tasks", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        taskList.innerHTML = "";
+        data.forEach(task => {
+            taskList.innerHTML += `<li>${task.title} - ${task.status}</li>`;
+        });
+    });
+}
+
+loadTasks();
+</script>
+
+</body>
+</html>

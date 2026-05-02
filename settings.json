@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./config.py",
+        "./models.py"
+    ]
+}
